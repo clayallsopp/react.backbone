@@ -4,7 +4,7 @@ React.BackboneMixin = {
       var model = this.getModel();
       // Detect if it's a collection
       if (model instanceof Backbone.Collection) {
-          model.on('add remove reset', this.forceUpdate, this);
+          model.on('add remove reset sort', this.forceUpdate, this);
       }
       else if (model) {
           var changeOptions = this.changeOptions || "change";
