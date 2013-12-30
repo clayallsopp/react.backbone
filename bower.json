@@ -1,0 +1,19 @@
+{
+  "name": "react.backbone",
+  "main": "react.backbone.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/usepropeller/react.backbone",
+  "description": "A small mixin that adds Backbone model/collection listeners to React components.",
+  "keywords": [
+    "backbone",
+    "react"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
