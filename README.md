@@ -4,7 +4,7 @@ react.backbone
 Plugin for React to make Backbone migration easier. Initialize your view with a Backbone.Model; when this model changes, `#render` will be called.
 
 ```javascript
-UserView = React.createBackboneClass({
+var UserView = React.createBackboneClass({
     changeOptions: "change:name", // DEFAULT is "change",
     render: function() {
         return (
@@ -17,4 +17,22 @@ UserView = React.createBackboneClass({
 
 var user = new Backbone.Model();
 var userView = UserView({model: user});
+```
+
+### Installation
+
+Either download `react.backbone.js` or install the `react.backbone` package on Bower:
+
+```
+bower install --save react.backbone
+```
+
+You can either include react.backbone in a `<script>` tag (after you've included Backbone and React) or through RequireJS/AMD:
+
+```javascript
+define(['backbone', 'react', 'react.backbone'], function(Backbone, React) {
+    var UserView = React.createBackboneClass({
+        // ...
+    });
+});
 ```
