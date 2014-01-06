@@ -1,12 +1,12 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['react'], factory);
+        define(['backbone', 'react'], factory);
     } else {
         // Browser globals
-        root.amdWeb = factory(root.React);
+        root.amdWeb = factory(root.Backbone, root.React);
     }
-}(this, function (React) {
+}(this, function (Backbone, React) {
 
     React.BackboneMixin = {
         _subscribe: function(model) {
