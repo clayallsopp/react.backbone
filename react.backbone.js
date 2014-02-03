@@ -15,7 +15,8 @@
             }
             // Detect if it's a collection
             if (model instanceof Backbone.Collection) {
-                model.on('add remove reset sort', function () { this.forceUpdate(); }, this);
+                var _throttledForceUpdate = _.throttle(this.forceUpdate.bind(this, null),  500);
+                model.on('add remove reset sort', _throttledForceUpdate, this);
             }
             else if (model) {
                 var changeOptions = this.changeOptions || 'change';
