@@ -7,6 +7,22 @@
         root.amdWeb = factory(root.Backbone, root.React);
     }
 }(this, function (Backbone, React) {
+    var _safeForceUpdate = function(){
+        if (! this.isMounted()) {
+            return;
+        }
+        (this.onModelChange || this.forceUpdate).call(this);
+    };
+
+    getChangeOptions = function(model) {
+        if (this.changeOptions) {
+            return this.changeOptions;
+        } else if (model instanceof Backbone.Collection) {
+            return 'add remove reset sort';
+        } else {
+            return 'change';
+        }
+    };
 
     React.BackboneMixin = {
         _subscribe: function(model) {
@@ -14,25 +30,10 @@
                 return;
             }
 
-            var changeOptions;
-            var _safeForceUpdate = function(){
-                if (! this.isMounted()) {
-                    return;
-                }
-                (this.onModelChange || this.forceUpdate).call(this);
-            };
+            var changeOptions = getChangeOptions.call(this, model);
             var _throttledForceUpdate = _.debounce(_safeForceUpdate.bind(this, null),  10);
 
-
-            if (this.changeOptions) {
-                changeOptions = this.changeOptions;
-            } else if (model instanceof Backbone.Collection) {
-                changeOptions = 'add remove reset sort';
-            } else {
-                changeOptions = 'change';
-            }
             model.on(changeOptions, _throttledForceUpdate, this);
-
         },
         _unsubscribe: function(model) {
             if (!model) {
