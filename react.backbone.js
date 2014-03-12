@@ -13,7 +13,7 @@
             if (!model) {
                 return;
             }
-            // Detect if it's a collection
+
             if (model instanceof Backbone.Collection) {
                 var changeOptions = this.changeOptions || 'add remove reset sort';
                 var _throttledForceUpdate = _.debounce(this.forceUpdate.bind(this, null),  10);
