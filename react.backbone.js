@@ -14,13 +14,15 @@
                 return;
             }
 
+            var changeOptions = this.changeOptions;
+
             if (model instanceof Backbone.Collection) {
-                var changeOptions = this.changeOptions || 'add remove reset sort';
+                changeOptions = changeOptions || 'add remove reset sort';
                 var _throttledForceUpdate = _.debounce(this.forceUpdate.bind(this, null),  10);
                 model.on(changeOptions, _throttledForceUpdate, this);
             }
             else {
-                var changeOptions = this.changeOptions || 'change';
+                changeOptions = changeOptions || 'change';
                 model.on(changeOptions, (this.onModelChange || function () { this.forceUpdate(); }), this);
             }
         },
