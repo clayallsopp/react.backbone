@@ -14,24 +14,25 @@
                 return;
             }
 
+            var changeOptions;
             var _safeForceUpdate = function(){
                 if (! this.isMounted()) {
                     return;
                 }
-                this.forceUpdate();
+                (this.onModelChange || this.forceUpdate).call(this);
             };
-
             var _throttledForceUpdate = _.debounce(_safeForceUpdate.bind(this, null),  10);
 
-            var changeOptions = this.changeOptions;
 
-            if (model instanceof Backbone.Collection) {
-                changeOptions = changeOptions || 'add remove reset sort';
-                model.on(changeOptions, _throttledForceUpdate, this);
+            if (this.changeOptions) {
+                changeOptions = this.changeOptions;
+            } else if (model instanceof Backbone.Collection) {
+                changeOptions = 'add remove reset sort';
             } else {
-                changeOptions = changeOptions || 'change';
-                model.on(changeOptions, (this.onModelChange || function () { this.forceUpdate(); }), this);
+                changeOptions = 'change';
             }
+            model.on(changeOptions, _throttledForceUpdate, this);
+
         },
         _unsubscribe: function(model) {
             if (!model) {
