@@ -24,34 +24,34 @@
         }
     };
 
+    subscribe = function(model) {
+        if (!model) {
+            return;
+        }
+
+        var changeOptions = getChangeOptions.call(this, model);
+        var _throttledForceUpdate = _.debounce(_safeForceUpdate.bind(this, null),  10);
+
+        model.on(changeOptions, _throttledForceUpdate, this);
+    };
+    unsubscribe = function(model) {
+        if (!model) {
+            return;
+        }
+        model.off(null, null, this);
+    };
     React.BackboneMixin = {
-        _subscribe: function(model) {
-            if (!model) {
-                return;
-            }
-
-            var changeOptions = getChangeOptions.call(this, model);
-            var _throttledForceUpdate = _.debounce(_safeForceUpdate.bind(this, null),  10);
-
-            model.on(changeOptions, _throttledForceUpdate, this);
-        },
-        _unsubscribe: function(model) {
-            if (!model) {
-                return;
-            }
-            model.off(null, null, this);
-        },
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            this._subscribe(this.props.model);
+            subscribe.call(this, this.props.model);
         },
         componentWillReceiveProps: function(nextProps) {
             if (this.props.model === nextProps.model) {
                 return;
             }
 
-            this._unsubscribe(this.props.model);
-            this._subscribe(nextProps.model);
+            unsubscribe.call(this, this.props.model);
+            subscribe.call(this, nextProps.model);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
@@ -68,7 +68,7 @@
         },
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
-            this._unsubscribe(this.props.model);
+            unsubscribe.call(this, this.props.model);
         }
     };
 
