@@ -19,7 +19,7 @@
                 var _throttledForceUpdate = _.debounce(this.forceUpdate.bind(this, null),  10);
                 model.on(changeOptions, _throttledForceUpdate, this);
             }
-            else if (model) {
+            else {
                 var changeOptions = this.changeOptions || 'change';
                 model.on(changeOptions, (this.onModelChange || function () { this.forceUpdate(); }), this);
             }
