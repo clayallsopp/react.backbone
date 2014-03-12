@@ -36,20 +36,24 @@
             this._subscribe(this.props.model);
         },
         componentWillReceiveProps: function(nextProps) {
-            if (this.props.model !== nextProps.model) {
-                this._unsubscribe(this.props.model);
-                this._subscribe(nextProps.model);
+            if (this.props.model === nextProps.model) {
+                return;
+            }
 
-                if (typeof this.componentWillChangeModel === 'function') {
-                    this.componentWillChangeModel();
-                }
+            this._unsubscribe(this.props.model);
+            this._subscribe(nextProps.model);
+
+            if (typeof this.componentWillChangeModel === 'function') {
+                this.componentWillChangeModel();
             }
         },
         componentDidUpdate: function(prevProps, prevState) {
-            if (this.props.model !== prevProps.model) {
-                if (typeof this.componentDidChangeModel === 'function') {
-                    this.componentDidChangeModel();
-                }
+            if (this.props.model === prevProps.model) {
+                return;
+            }
+
+            if (typeof this.componentDidChangeModel === 'function') {
+                this.componentDidChangeModel();
             }
         },
         componentWillUnmount: function() {
