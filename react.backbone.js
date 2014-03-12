@@ -72,19 +72,22 @@
         }
     };
 
+    React.BackboneViewMixin = {
+        getModel: function() {
+            return this.props.model;
+        },
+        model: function() {
+            return this.getModel();
+        },
+        el: function() {
+            return this.isMounted() && this.getDOMNode();
+        }
+    };
+
     React.createBackboneClass = function(spec) {
         var currentMixins = spec.mixins || [];
 
-        spec.mixins = currentMixins.concat([React.BackboneMixin]);
-        spec.getModel = function() {
-            return this.props.model;
-        };
-        spec.model = function() {
-            return this.getModel();
-        };
-        spec.el = function() {
-            return this.isMounted() && this.getDOMNode();
-        };
+        spec.mixins = currentMixins.concat([React.BackboneMixin, React.BackboneViewMixin]);
         return React.createClass(spec);
     };
 
