@@ -7,6 +7,7 @@
         root.amdWeb = factory(root.Backbone, root.React);
     }
 }(this, function (Backbone, React) {
+    "use strict";
     var _safeForceUpdate = function(){
         if (! this.isMounted()) {
             return;
@@ -14,7 +15,7 @@
         (this.onModelChange || this.forceUpdate).call(this);
     };
 
-    getChangeOptions = function(model) {
+    var getChangeOptions = function(model) {
         if (this.changeOptions) {
             return this.changeOptions;
         } else if (model instanceof Backbone.Collection) {
@@ -24,7 +25,7 @@
         }
     };
 
-    subscribe = function(model) {
+    var subscribe = function(model) {
         if (!model) {
             return;
         }
@@ -34,12 +35,14 @@
 
         model.on(changeOptions, _throttledForceUpdate, this);
     };
-    unsubscribe = function(model) {
+
+    var unsubscribe = function(model) {
         if (!model) {
             return;
         }
         model.off(null, null, this);
     };
+
     React.BackboneMixin = {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
