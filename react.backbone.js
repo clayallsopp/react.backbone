@@ -10,16 +10,14 @@
     "use strict";
 
     var getChangeOptions = function(component, model) {
-        if (component.changeOptions) {
-            return component.changeOptions;
-        } else if (model instanceof Backbone.Collection) {
+        if (model instanceof Backbone.Collection) {
             return 'add remove reset sort';
         } else {
             return 'change';
         }
     };
 
-    var subscribe = function(component, model) {
+    var subscribe = function(component, model, changeOptions) {
         if (!model) {
             return;
         }
@@ -31,7 +29,6 @@
             (component.onModelChange || component.forceUpdate).call(component);
         }, 10);
 
-        var changeOptions = getChangeOptions(component, model);
 
         model.on(changeOptions, throttledForceUpdate, component);
     };
@@ -42,26 +39,26 @@
         }
         model.off(null, null, component);
     };
-
-    React.BackboneMixin = {
+    React.BackboneMixin = function(prop_name, customChangeOptions){ return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            subscribe(this, this.props.model);
+            var changeOptions = customChangeOptions || getChangeOptions(this, this.props[prop_name]);
+            subscribe(this, this.props[prop_name], changeOptions);
         },
         componentWillReceiveProps: function(nextProps) {
-            if (this.props.model === nextProps.model) {
+            if (this.props[prop_name] === nextProps[prop_name]) {
                 return;
             }
 
-            unsubscribe(this, this.props.model);
-            subscribe(this, nextProps.model);
+            unsubscribe(this, this.props[prop_name]);
+            subscribe(this, nextProps[prop_name]);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
             }
         },
         componentDidUpdate: function(prevProps, prevState) {
-            if (this.props.model === prevProps.model) {
+            if (this.props[prop_name] === prevProps[prop_name]) {
                 return;
             }
 
@@ -71,9 +68,9 @@
         },
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
-            unsubscribe(this, this.props.model);
+            unsubscribe(this, this.props[prop_name]);
         }
-    };
+    };};
 
     React.BackboneViewMixin = {
         getModel: function() {
@@ -90,7 +87,10 @@
     React.createBackboneClass = function(spec) {
         var currentMixins = spec.mixins || [];
 
-        spec.mixins = currentMixins.concat([React.BackboneMixin, React.BackboneViewMixin]);
+        spec.mixins = currentMixins.concat([
+            React.BackboneMixin('model', spec.changeOptions),
+            React.BackboneViewMixin
+        ]);
         return React.createClass(spec);
     };
 

@@ -19,6 +19,26 @@ var user = new Backbone.Model();
 var userView = UserView({model: user});
 ```
 
+If you need to use multiple models, you can do so by including the mixin multiple times:
+
+```javascript
+var CommentView = React.createBackboneClass({
+    mixins: [
+        React.Backbone.Mixin("user", "change:name"),
+        React.Backbone.Mixin("comment")
+    ],
+    render: function() {
+        return (
+          <div>
+              <p>{this.props.comment.get("text")}</p>
+              <p>{'posted by' + this.props.user.get("name")}</h1>
+          </div>
+        );
+    }
+});
+```
+
+
 ### Installation
 
 Either download `react.backbone.js` or install the `react.backbone` package on Bower:
