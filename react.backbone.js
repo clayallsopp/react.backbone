@@ -8,16 +8,10 @@
     }
 }(this, function (Backbone, React) {
     "use strict";
-    var _safeForceUpdate = function(){
-        if (! this.isMounted()) {
-            return;
-        }
-        (this.onModelChange || this.forceUpdate).call(this);
-    };
 
-    var getChangeOptions = function(model) {
-        if (this.changeOptions) {
-            return this.changeOptions;
+    var getChangeOptions = function(component, model) {
+        if (component.changeOptions) {
+            return component.changeOptions;
         } else if (model instanceof Backbone.Collection) {
             return 'add remove reset sort';
         } else {
@@ -25,36 +19,42 @@
         }
     };
 
-    var subscribe = function(model) {
+    var subscribe = function(component, model) {
         if (!model) {
             return;
         }
 
-        var changeOptions = getChangeOptions.call(this, model);
-        var _throttledForceUpdate = _.debounce(_safeForceUpdate.bind(this, null),  10);
+        var throttledForceUpdate = _.debounce(function(){
+            if (! component.isMounted()) {
+                return;
+            }
+            (component.onModelChange || component.forceUpdate).call(component);
+        }, 10);
 
-        model.on(changeOptions, _throttledForceUpdate, this);
+        var changeOptions = getChangeOptions(component, model);
+
+        model.on(changeOptions, throttledForceUpdate, component);
     };
 
-    var unsubscribe = function(model) {
+    var unsubscribe = function(component, model) {
         if (!model) {
             return;
         }
-        model.off(null, null, this);
+        model.off(null, null, component);
     };
 
     React.BackboneMixin = {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            subscribe.call(this, this.props.model);
+            subscribe(this, this.props.model);
         },
         componentWillReceiveProps: function(nextProps) {
             if (this.props.model === nextProps.model) {
                 return;
             }
 
-            unsubscribe.call(this, this.props.model);
-            subscribe.call(this, nextProps.model);
+            unsubscribe(this, this.props.model);
+            subscribe(this, nextProps.model);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
@@ -71,7 +71,7 @@
         },
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
-            unsubscribe.call(this, this.props.model);
+            unsubscribe(this, this.props.model);
         }
     };
 
