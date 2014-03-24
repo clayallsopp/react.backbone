@@ -24,8 +24,8 @@ If you need to use multiple models, you can do so by including the mixin multipl
 ```javascript
 var CommentView = React.createBackboneClass({
     mixins: [
-        React.Backbone.Mixin("user", "change:name"),
-        React.Backbone.Mixin("comment")
+        React.BackboneMixin("user", "change:name"),
+        React.BackboneMixin("comment")
     ],
     render: function() {
         return (
