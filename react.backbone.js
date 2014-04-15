@@ -22,15 +22,17 @@
             return;
         }
 
-        var throttledForceUpdate = _.debounce(function(){
-            if (! component.isMounted()) {
-                return;
-            }
-            (component.onModelChange || component.forceUpdate).call(component);
-        }, 10);
+        var triggerRender = function() {
+            if (component.isMounted())
+                (component.onModelChange || component.forceUpdate).call(component);
+        };
 
+        if (model instanceof Backbone.Collection)
+          triggerRender = _.debounce(triggerRerender, 0);
+        //note: if we debounce models too we can no longer use model attributes
+        //as properties to react controlled components due to https://github.com/facebook/react/issues/955
 
-        model.on(changeOptions, throttledForceUpdate, component);
+        model.on(changeOptions, triggerRender, component);
     };
 
     var unsubscribe = function(component, model) {
