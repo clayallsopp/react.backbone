@@ -9,30 +9,30 @@
 }(this, function (Backbone, React) {
     "use strict";
 
-    var getChangeOptions = function(component, model) {
-        if (model instanceof Backbone.Collection) {
-            return 'add remove reset sort';
-        } else {
-            return 'change';
-        }
+    var collection_behavior = {
+      change_options: 'add remove reset sort',
+      update_scheduler: function(func){ return _.debounce(func,0); }
+    };
+    var model_behavior = {
+      change_options: 'change',
+      update_scheduler: function(func){ return func; }
+      //note: if we debounce models too we can no longer use model attributes
+      //as properties to react controlled components due to https://github.com/facebook/react/issues/955
     };
 
-    var subscribe = function(component, model, changeOptions) {
+    var subscribe = function(component, model, customChangeOptions) {
         if (!model) {
             return;
-        }
+	}
 
-        var triggerRender = function() {
+        var behavior = model instanceof Backbone.Collection ? collection_behavior : model_behavior;
+
+        var triggerUpdate = behavior.update_scheduler(function() {
             if (component.isMounted())
                 (component.onModelChange || component.forceUpdate).call(component);
-        };
+        });
 
-        if (model instanceof Backbone.Collection)
-          triggerRender = _.debounce(triggerRerender, 0);
-        //note: if we debounce models too we can no longer use model attributes
-        //as properties to react controlled components due to https://github.com/facebook/react/issues/955
-
-        model.on(changeOptions, triggerRender, component);
+        model.on(customChangeOptions || behavior.change_options, triggerUpdate, component);
     };
 
     var unsubscribe = function(component, model) {
@@ -44,8 +44,7 @@
     React.BackboneMixin = function(prop_name, customChangeOptions){ return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            var changeOptions = customChangeOptions || getChangeOptions(this, this.props[prop_name]);
-            subscribe(this, this.props[prop_name], changeOptions);
+            subscribe(this, this.props[prop_name], customChangeOptions);
         },
         componentWillReceiveProps: function(nextProps) {
             if (this.props[prop_name] === nextProps[prop_name]) {
