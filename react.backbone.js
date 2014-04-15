@@ -52,7 +52,7 @@
             }
 
             unsubscribe(this, this.props[prop_name]);
-            subscribe(this, nextProps[prop_name]);
+            subscribe(this, nextProps[prop_name], customChangeOptions);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
