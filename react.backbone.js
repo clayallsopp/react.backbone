@@ -72,6 +72,7 @@
             unsubscribe(this, this.props[prop_name]);
         }
     };};
+    _.extend(React.BackboneMixin, React.BackboneMixin('model'));
 
     React.BackboneViewMixin = {
         getModel: function() {
@@ -89,7 +90,7 @@
         var currentMixins = spec.mixins || [];
 
         spec.mixins = currentMixins.concat([
-            React.BackboneMixin('model', spec.changeOptions),
+            React.BackboneMixin('model'),
             React.BackboneViewMixin
         ]);
         return React.createClass(spec);
