@@ -10,20 +10,20 @@
     "use strict";
 
     var collection_behavior = {
-      change_options: 'add remove reset sort',
-      update_scheduler: function(func){ return _.debounce(func,0); }
+        changeOptions: 'add remove reset sort',
+        update_scheduler: function(func) { return _.debounce(func, 0); }
     };
     var model_behavior = {
-      change_options: 'change',
-      update_scheduler: _.identity
-      //note: if we debounce models too we can no longer use model attributes
-      //as properties to react controlled components due to https://github.com/facebook/react/issues/955
+        changeOptions: 'change',
+        update_scheduler: _.identity
+        //note: if we debounce models too we can no longer use model attributes
+        //as properties to react controlled components due to https://github.com/facebook/react/issues/955
     };
 
     var subscribe = function(component, model, customChangeOptions) {
         if (!model) {
             return;
-	}
+        }
 
         var behavior = model instanceof Backbone.Collection ? collection_behavior : model_behavior;
 
@@ -41,7 +41,7 @@
         }
         model.off(null, null, component);
     };
-    React.BackboneMixin = function(prop_name, customChangeOptions){ return {
+    React.BackboneMixin = function(prop_name, customChangeOptions) { return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
             subscribe(this, this.props[prop_name], customChangeOptions);
