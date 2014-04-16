@@ -1,12 +1,15 @@
 (function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
+    if (typeof exports === 'object') {
+        // CommonJS
+        module.exports = factory(require('backbone'), require('react'), require('underscore'));
+    } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['backbone', 'react'], factory);
+        define(['backbone', 'react', 'underscore'], factory);
     } else {
         // Browser globals
-        root.amdWeb = factory(root.Backbone, root.React);
+        root.amdWeb = factory(root.Backbone, root.React, root._);
     }
-}(this, function (Backbone, React) {
+}(this, function (Backbone, React, _) {
     "use strict";
 
     var collection_behavior = {

@@ -17,6 +17,20 @@ var UserView = React.createBackboneClass({
 
 var user = new Backbone.Model();
 var userView = UserView({model: user});
+
+// Mount your component directly
+React.renderComponent(userView, document.getElementById('element'));
+
+// Render as a subview
+var ProfileView = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <UserView model={this.props.user} />
+      </div>
+    );
+  }
+});
 ```
 
 If you need to use multiple models, you can do so by including the mixin multiple times:
