@@ -1,7 +1,7 @@
 {
   "name": "react.backbone",
   "main": "react.backbone.js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/usepropeller/react.backbone",
   "description": "A small mixin that adds Backbone model/collection listeners to React components.",
   "keywords": [
