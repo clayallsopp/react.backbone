@@ -31,8 +31,8 @@
             if (component.isMounted())
                 (component.onModelChange || component.forceUpdate).call(component);
         });
-
-        model.on(customChangeOptions || behavior.change_options, triggerUpdate, component);
+        var changeOptions = customChangeOptions || component.changeOptions || behavior.changeOptions;
+        model.on(changeOptions, triggerUpdate, component);
     };
 
     var unsubscribe = function(component, model) {
