@@ -1,4 +1,4 @@
-(function (root, factory) {
+(function(root, factory) {
     if (typeof exports === 'object') {
         // CommonJS
         module.exports = factory(require('backbone'), require('react'), require('underscore'));
@@ -9,16 +9,18 @@
         // Browser globals
         root.amdWeb = factory(root.Backbone, root.React, root._);
     }
-}(this, function (Backbone, React, _) {
-    "use strict";
+}(this, function(Backbone, React, _) {
 
-    var collection_behavior = {
+    'use strict';
+
+    var collectionBehavior = {
         changeOptions: 'add remove reset sort',
-        update_scheduler: function(func) { return _.debounce(func, 0); }
+        updateScheduler: function(func) { return _.debounce(func, 0); }
     };
-    var model_behavior = {
+
+    var modelBehavior = {
         changeOptions: 'change',
-        update_scheduler: _.identity
+        updateScheduler: _.identity
         //note: if we debounce models too we can no longer use model attributes
         //as properties to react controlled components due to https://github.com/facebook/react/issues/955
     };
@@ -28,12 +30,14 @@
             return;
         }
 
-        var behavior = model instanceof Backbone.Collection ? collection_behavior : model_behavior;
+        var behavior = model instanceof Backbone.Collection ? collectionBehavior : modelBehavior;
 
-        var triggerUpdate = behavior.update_scheduler(function() {
-            if (component.isMounted())
+        var triggerUpdate = behavior.updateScheduler(function() {
+            if (component.isMounted()) {
                 (component.onModelChange || component.forceUpdate).call(component);
+            }
         });
+
         var changeOptions = customChangeOptions || component.changeOptions || behavior.changeOptions;
         model.on(changeOptions, triggerUpdate, component);
     };
@@ -42,13 +46,17 @@
         if (!model) {
             return;
         }
+
         model.off(null, null, component);
     };
-    React.BackboneMixin = function(prop_name, customChangeOptions) { return {
+
+    React.BackboneMixin = function(prop_name, customChangeOptions) {
+      return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
             subscribe(this, this.props[prop_name], customChangeOptions);
         },
+
         componentWillReceiveProps: function(nextProps) {
             if (this.props[prop_name] === nextProps[prop_name]) {
                 return;
@@ -61,6 +69,7 @@
                 this.componentWillChangeModel();
             }
         },
+
         componentDidUpdate: function(prevProps, prevState) {
             if (this.props[prop_name] === prevProps[prop_name]) {
                 return;
@@ -70,20 +79,25 @@
                 this.componentDidChangeModel();
             }
         },
+
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
             unsubscribe(this, this.props[prop_name]);
         }
-    };};
+      };
+    };
+
     _.extend(React.BackboneMixin, React.BackboneMixin('model'));
 
     React.BackboneViewMixin = {
         getModel: function() {
             return this.props.model;
         },
+
         model: function() {
             return this.getModel();
         },
+
         el: function() {
             return this.isMounted() && this.getDOMNode();
         }
@@ -96,9 +110,9 @@
             React.BackboneMixin('model'),
             React.BackboneViewMixin
         ]);
+
         return React.createClass(spec);
     };
 
     return React;
-
 }));
