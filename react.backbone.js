@@ -50,20 +50,20 @@
         model.off(null, null, component);
     };
 
-    React.BackboneMixin = function(prop_name, customChangeOptions) {
+    React.BackboneMixin = function(propName, customChangeOptions) {
       return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            subscribe(this, this.props[prop_name], customChangeOptions);
+            subscribe(this, this.props[propName], customChangeOptions);
         },
 
         componentWillReceiveProps: function(nextProps) {
-            if (this.props[prop_name] === nextProps[prop_name]) {
+            if (this.props[propName] === nextProps[propName]) {
                 return;
             }
 
-            unsubscribe(this, this.props[prop_name]);
-            subscribe(this, nextProps[prop_name], customChangeOptions);
+            unsubscribe(this, this.props[propName]);
+            subscribe(this, nextProps[propName], customChangeOptions);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
@@ -71,7 +71,7 @@
         },
 
         componentDidUpdate: function(prevProps, prevState) {
-            if (this.props[prop_name] === prevProps[prop_name]) {
+            if (this.props[propName] === prevProps[propName]) {
                 return;
             }
 
@@ -82,7 +82,7 @@
 
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
-            unsubscribe(this, this.props[prop_name]);
+            unsubscribe(this, this.props[propName]);
         }
       };
     };
