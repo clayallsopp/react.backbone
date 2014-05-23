@@ -1,7 +1,9 @@
 react.backbone
 ==============
 
-Plugin for React to make Backbone migration easier. Initialize your view with a Backbone.Model; when this model changes, `#render` will be called.
+Plugin for React to make Backbone integration easier. Initialize your component
+with a Backbone.Model or Backbone.Collection; when the model or collection
+changes, `#render` will be called.
 
 ```javascript
 var UserView = React.createBackboneClass({
@@ -24,16 +26,43 @@ React.renderComponent(userView, document.getElementById('element'));
 // Render as a subview
 var ProfileView = React.createClass({
   render: function() {
-    return (
-      <div>
-        <UserView model={this.props.user} />
-      </div>
-    );
+      return (
+        <div>
+          <UserView model={this.props.user} />
+        </div>
+      );
   }
 });
 ```
 
-If you need to use multiple models, you can do so by including the mixin multiple times:
+React.Backbone also plays nicely with `Backbone.Collection`. Anytime the `add`,
+`remove`, `reset` or `sort` events are triggered the component will re-render.
+
+```javascript
+var UsersListView = React.createBackboneClasss({
+    render: function() {
+        var usersList = this.getCollection().map(function(user) {
+            return <li>{ user.get('name') }</li>;
+        });
+
+        return (
+          <div>
+            <ul>
+              { usersList }
+            </ul>
+          </div>
+        );
+    }
+});
+
+var usersList = new Backbone.Collection();
+var usersListView = UsersListView({collection: usersList});
+
+React.renderComponent(usersListView, document.getElementById('users'));
+```
+
+If you need to use multiple models, you can do so by including the mixin
+multiple times:
 
 ```javascript
 var CommentView = React.createBackboneClass({
@@ -55,13 +84,13 @@ var CommentView = React.createBackboneClass({
 
 ### Installation
 
-Either download `react.backbone.js` or install the `react.backbone` package on Bower:
+Either download `react.backbone.js` or install the `react.backbone` package on
+Bower:
 
-```
-bower install --save react.backbone
-```
+``` bower install --save react.backbone ```
 
-You can either include react.backbone in a `<script>` tag (after you've included Backbone and React) or through RequireJS/AMD:
+You can either include react.backbone in a `<script>` tag (after you've
+included Backbone and React) or through RequireJS/AMD:
 
 ```javascript
 define(['backbone', 'react', 'react.backbone'], function(Backbone, React) {
