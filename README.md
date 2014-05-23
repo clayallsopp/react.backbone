@@ -39,10 +39,16 @@ React.Backbone also plays nicely with `Backbone.Collection`. Anytime the `add`,
 `remove`, `reset` or `sort` events are triggered the component will re-render.
 
 ```javascript
-var UsersListView = React.createBackboneClasss({
+var UserView = React.createBackboneClass({
+  render: function() {
+    return <li>{ this.getModel().get('name') }</li>;
+  }
+});
+
+var UsersListView = React.createBackboneClass({
     render: function() {
         var usersList = this.getCollection().map(function(user) {
-            return <li>{ user.get('name') }</li>;
+            return <User model={user} />;
         });
 
         return (
@@ -87,7 +93,9 @@ var CommentView = React.createBackboneClass({
 Either download `react.backbone.js` or install the `react.backbone` package on
 Bower:
 
-``` bower install --save react.backbone ```
+```
+bower install --save react.backbone
+```
 
 You can either include react.backbone in a `<script>` tag (after you've
 included Backbone and React) or through RequireJS/AMD:
