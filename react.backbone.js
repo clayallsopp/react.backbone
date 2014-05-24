@@ -20,17 +20,17 @@
 
     var modelBehavior = {
         changeOptions: 'change',
-        updateScheduler: _.identity
         //note: if we debounce models too we can no longer use model attributes
         //as properties to react controlled components due to https://github.com/facebook/react/issues/955
+        updateScheduler: _.identity
     };
 
-    var subscribe = function(component, model, customChangeOptions) {
-        if (!model) {
+    var subscribe = function(component, modelOrCollection, customChangeOptions) {
+        if (!modelOrCollection) {
             return;
         }
 
-        var behavior = model instanceof Backbone.Collection ? collectionBehavior : modelBehavior;
+        var behavior = modelOrCollection instanceof Backbone.Collection ? collectionBehavior : modelBehavior;
 
         var triggerUpdate = behavior.updateScheduler(function() {
             if (component.isMounted()) {
@@ -39,15 +39,15 @@
         });
 
         var changeOptions = customChangeOptions || component.changeOptions || behavior.changeOptions;
-        model.on(changeOptions, triggerUpdate, component);
+        modelOrCollection.on(changeOptions, triggerUpdate, component);
     };
 
-    var unsubscribe = function(component, model) {
-        if (!model) {
+    var unsubscribe = function(component, modelOrCollection) {
+        if (!modelOrCollection) {
             return;
         }
 
-        model.off(null, null, component);
+        modelOrCollection.off(null, null, component);
     };
 
     React.BackboneMixin = function(propName, customChangeOptions) {
@@ -87,8 +87,6 @@
       };
     };
 
-    _.extend(React.BackboneMixin, React.BackboneMixin('model'));
-
     React.BackboneViewMixin = {
         getModel: function() {
             return this.props.model;
@@ -96,6 +94,14 @@
 
         model: function() {
             return this.getModel();
+        },
+
+        getCollection: function() {
+            return this.props.collection;
+        },
+
+        collection: function() {
+            return this.getCollection();
         },
 
         el: function() {
@@ -108,6 +114,7 @@
 
         spec.mixins = currentMixins.concat([
             React.BackboneMixin('model'),
+            React.BackboneMixin('collection'),
             React.BackboneViewMixin
         ]);
 
