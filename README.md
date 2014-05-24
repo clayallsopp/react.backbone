@@ -48,7 +48,7 @@ var UserView = React.createBackboneClass({
 var UsersListView = React.createBackboneClass({
     render: function() {
         var usersList = this.getCollection().map(function(user) {
-            return <User model={user} />;
+            return <UserView model={user} />;
         });
 
         return (
