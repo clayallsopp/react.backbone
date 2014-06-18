@@ -50,20 +50,35 @@
         modelOrCollection.off(null, null, component);
     };
 
-    React.BackboneMixin = function(propName, customChangeOptions) {
+    React.BackboneMixin = function(optionsOrPropName, customChangeOptions) {
+      var propName, modelOrCollection;
+      if (typeof optionsOrPropName === "object") {
+          customChangeOptions = optionsOrPropName.renderOn;
+          propName = optionsOrPropName.propName;
+          modelOrCollection = optionsOrPropName.modelOrCollection;
+      } else {
+          propName = optionsOrPropName;
+      }
+
+      if (!modelOrCollection) {
+          modelOrCollection = function(props) {
+            return props[propName];
+          }
+      }
+
       return {
         componentDidMount: function() {
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
-            subscribe(this, this.props[propName], customChangeOptions);
+            subscribe(this, modelOrCollection(this.props), customChangeOptions);
         },
 
         componentWillReceiveProps: function(nextProps) {
-            if (this.props[propName] === nextProps[propName]) {
+            if (modelOrCollection(this.props) === modelOrCollection(nextProps)) {
                 return;
             }
 
-            unsubscribe(this, this.props[propName]);
-            subscribe(this, nextProps[propName], customChangeOptions);
+            unsubscribe(this, modelOrCollection(this.props));
+            subscribe(this, modelOrCollection(nextProps), customChangeOptions);
 
             if (typeof this.componentWillChangeModel === 'function') {
                 this.componentWillChangeModel();
@@ -71,7 +86,7 @@
         },
 
         componentDidUpdate: function(prevProps, prevState) {
-            if (this.props[propName] === prevProps[propName]) {
+            if (modelOrCollection(this.props) === modelOrCollection(prevProps)) {
                 return;
             }
 
@@ -82,7 +97,7 @@
 
         componentWillUnmount: function() {
             // Ensure that we clean up any dangling references when the component is destroyed.
-            unsubscribe(this, this.props[propName]);
+            unsubscribe(this, modelOrCollection(this.props));
         }
       };
     };

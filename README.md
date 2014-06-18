@@ -87,6 +87,26 @@ var CommentView = React.createBackboneClass({
 });
 ```
 
+You can also pass an object with options to the included mixin:
+
+```javascript
+React.BackboneMixin({
+    propName: "user",
+    renderOn: "change:name"
+});
+```
+
+Or supply a custom callback to the option `modelOrCollection` to retrieve the
+property from the component's props:
+
+```javascript
+React.BackboneMixin({
+    modelOrCollection: function(props) {
+        return props.comment.user;
+    },
+    renderOn: "change:name"
+});
+```
 
 ### Installation
 
