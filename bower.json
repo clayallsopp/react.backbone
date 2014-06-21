@@ -14,6 +14,8 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "__tests__",
+    "preprocessor.js"
   ]
 }

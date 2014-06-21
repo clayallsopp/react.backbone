@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest-cli": "~0.1.15",
+    "react-tools": "*"
+  },
+  "dependencies": {
+    "react": "*",
+    "backbone": "*"
+  },
+  "jest": {
+    "unmockedModulePathPatterns": ["node_modules/react"],
+    "scriptPreprocessor": "preprocessor.js"
+  }
+}
