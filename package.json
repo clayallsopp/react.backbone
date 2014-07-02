@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest"
   },
+  "description": "Plugin for React to make Backbone migration easier",
   "main": "react.backbone.js",
   "repository": {
     "type": "git",
