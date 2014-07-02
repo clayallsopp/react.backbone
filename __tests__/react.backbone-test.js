@@ -36,6 +36,40 @@ describe('react.backbone', function() {
       var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
       expect(header.getDOMNode().textContent).toEqual('David');
     });
+
+    describe("with changeOptions", function() {
+      var UserView = React.createBackboneClass({
+        changeOptions: "change:name",
+        render: function() {
+            return (
+              <div>
+                  <h1>{this.getModel().get("name")} {this.getModel().get("age")}</h1>
+              </div>
+            );
+        }
+      });
+
+      it('doesnt render if other property is changed', function() {
+        var user = new Backbone.Model({name: "Clay", age: "80"});
+        var userView = UserView({model: user});
+        TestUtils.renderIntoDocument(userView);
+        user.set("age", "60");
+
+        var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
+        expect(header.getDOMNode().textContent).toEqual('Clay 80');
+      });
+
+      it('does render if valid property is changed', function() {
+        var user = new Backbone.Model({name: "Clay", age: "80"});
+        var userView = UserView({model: user});
+        TestUtils.renderIntoDocument(userView);
+        user.set("name", "David");
+
+        var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
+        expect(header.getDOMNode().textContent).toEqual('David 80');
+      });
+
+    });
   });
 
   describe("with :collection key", function() {
