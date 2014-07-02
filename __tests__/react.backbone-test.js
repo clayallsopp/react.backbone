@@ -158,6 +158,95 @@ describe('react.backbone', function() {
       var header2 = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h2');
       expect(header2.getDOMNode().textContent).toEqual('6 Posts');
     });
+
+    describe("with options", function() {
+      describe("with propName", function() {
+        var UserView = React.createBackboneClass({
+          mixins: [
+            React.BackboneMixin({
+              propName: "user_model"
+            })
+          ],
+          render: function() {
+            return (
+              <div>
+                <h1>{this.props.user_model.get("name")}</h1>
+              </div>
+            );
+          }
+        });
+        it("should use that prop", function() {
+          var user = new Backbone.Model({name: "Clay"});
+          var userView = UserView({user_model: user});
+          TestUtils.renderIntoDocument(userView);
+
+          var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
+          expect(header.getDOMNode().textContent).toEqual('Clay');
+        });
+      });
+
+      describe("with renderOn", function() {
+        var UserView = React.createBackboneClass({
+          mixins: [
+            React.BackboneMixin({
+              propName: "user_model",
+              renderOn: "change:name"
+            })
+          ],
+          render: function() {
+            return (
+              <div>
+                <h1>{this.props.user_model.get("name")} {this.props.user_model.get("age")}</h1>
+              </div>
+            );
+          }
+        });
+        it("should use that event", function() {
+          var user = new Backbone.Model({name: "Clay", age: 25});
+          var userView = UserView({user_model: user});
+          TestUtils.renderIntoDocument(userView);
+          var header;
+
+          user.set("age", 26);
+          header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
+          expect(header.getDOMNode().textContent).toEqual('Clay 25');
+
+          user.set("name", "David");
+          expect(header.getDOMNode().textContent).toEqual('David 26');
+        });
+      });
+
+      describe("with modelOrCollection", function() {
+        var UserView = React.createBackboneClass({
+          mixins: [
+            React.BackboneMixin({
+              modelOrCollection: function(props) {
+                return props.user_model;
+              }
+            })
+          ],
+          render: function() {
+            return (
+              <div>
+                <h1>{this.props.user_model.get("name")}</h1>
+              </div>
+            );
+          }
+        });
+        it("should use that return value", function() {
+          var user = new Backbone.Model({name: "Clay"});
+          var userView = UserView({user_model: user});
+          TestUtils.renderIntoDocument(userView);
+
+          var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
+          expect(header.getDOMNode().textContent).toEqual('Clay');
+
+          user.set("name", "David");
+          expect(header.getDOMNode().textContent).toEqual('David');
+        });
+      });
+
+    });
   });
 
 });
