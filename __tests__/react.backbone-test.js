@@ -114,4 +114,50 @@ describe('react.backbone', function() {
     });
   });
 
+  describe("with mixins", function() {
+    var ProfileView = React.createBackboneClass({
+      mixins: [
+        React.BackboneMixin("user"),
+        React.BackboneMixin("wall")
+      ],
+      render: function() {
+        return (
+          <div>
+            <h1>{this.props.user.get("name")}</h1>
+            <h2>{this.props.wall.get("post_count")} Posts</h2>
+          </div>
+        );
+      }
+    });
+
+    it("should render mixins as-is", function() {
+      var user = new Backbone.Model({name: "Clay"});
+      var wall = new Backbone.Model({post_count: 5});
+      var profileView = ProfileView({user: user, wall: wall});
+      TestUtils.renderIntoDocument(profileView);
+
+      var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
+      expect(header.getDOMNode().textContent).toEqual('Clay');
+
+      var header2 = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h2');
+      expect(header2.getDOMNode().textContent).toEqual('5 Posts');
+
+    });
+
+    it("should re-render if either mixin model is changed", function() {
+      var user = new Backbone.Model({name: "Clay"});
+      var wall = new Backbone.Model({post_count: 5});
+      var profileView = ProfileView({user: user, wall: wall});
+      TestUtils.renderIntoDocument(profileView);
+
+      user.set("name", "David");
+      var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
+      expect(header.getDOMNode().textContent).toEqual('David');
+
+      wall.set("post_count", 6);
+      var header2 = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h2');
+      expect(header2.getDOMNode().textContent).toEqual('6 Posts');
+    });
+  });
+
 });
