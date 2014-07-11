@@ -75,6 +75,9 @@ multiple times:
 ```javascript
 var CommentView = React.createBackboneClass({
     mixins: [
+
+        // when the view is instantiated,
+        // 'user' and 'comment' can be passed as props
         React.BackboneMixin("user", "change:name"),
         React.BackboneMixin("comment")
     ],
@@ -87,6 +90,12 @@ var CommentView = React.createBackboneClass({
         );
     }
 });
+
+var user = new Backbone.Model();
+var comment = new Backbone.Model();
+var commentView = CommentView({user: user, comment: comment});
+
+React.renderComponent(usersListView, document.getElementById('users'));
 ```
 
 You can also pass an object with options to the included mixin:
