@@ -20,11 +20,11 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "jest-cli": "~0.1.15",
-    "react-tools": "*"
+    "jest-cli": "~0.1.17",
+    "react-tools": "0.11.x"
   },
   "dependencies": {
-    "react": "0.10.x",
+    "react": "0.11.x",
     "backbone": "1.x.x"
   },
   "jest": {

@@ -20,8 +20,8 @@ describe('react.backbone', function() {
 
     it('renders model as-is', function() {
       var user = new Backbone.Model({name: "Clay"});
-      var userView = UserView({model: user});
-      TestUtils.renderIntoDocument(userView);
+      var userViewRef = UserView({model: user});
+      var userView = TestUtils.renderIntoDocument(userViewRef);
 
       var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
       expect(header.getDOMNode().textContent).toEqual('Clay');
@@ -29,8 +29,8 @@ describe('react.backbone', function() {
 
     it('renders model after changes to property', function() {
       var user = new Backbone.Model({name: "Clay"});
-      var userView = UserView({model: user});
-      TestUtils.renderIntoDocument(userView);
+      var userViewRef = UserView({model: user});
+      var userView = TestUtils.renderIntoDocument(userViewRef);
       user.set("name", "David");
 
       var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
@@ -51,8 +51,8 @@ describe('react.backbone', function() {
 
       it('doesnt render if other property is changed', function() {
         var user = new Backbone.Model({name: "Clay", age: "80"});
-        var userView = UserView({model: user});
-        TestUtils.renderIntoDocument(userView);
+        var userViewRef = UserView({model: user});
+        var userView = TestUtils.renderIntoDocument(userViewRef);
         user.set("age", "60");
 
         var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
@@ -61,8 +61,8 @@ describe('react.backbone', function() {
 
       it('does render if valid property is changed', function() {
         var user = new Backbone.Model({name: "Clay", age: "80"});
-        var userView = UserView({model: user});
-        TestUtils.renderIntoDocument(userView);
+        var userViewRef = UserView({model: user});
+        var userView = TestUtils.renderIntoDocument(userViewRef);
         user.set("name", "David");
 
         var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
@@ -89,8 +89,8 @@ describe('react.backbone', function() {
 
     it('renders collection as-is', function() {
       var usersList = new Backbone.Collection([{name: "Clay"}, {name: "David"}]);
-      var usersListView = UsersListView({collection: usersList});
-      TestUtils.renderIntoDocument(usersListView);
+      var usersListViewRef = UsersListView({collection: usersList});
+      var usersListView = TestUtils.renderIntoDocument(usersListViewRef);
 
       jest.runOnlyPendingTimers();
 
@@ -102,8 +102,8 @@ describe('react.backbone', function() {
     it('renders collection on adding', function() {
 
       var usersList = new Backbone.Collection([{name: "Clay"}, {name: "David"}]);
-      var usersListView = UsersListView({collection: usersList});
-      TestUtils.renderIntoDocument(usersListView);
+      var usersListViewRef = UsersListView({collection: usersList});
+      var usersListView = TestUtils.renderIntoDocument(usersListViewRef);
       usersList.add({name: "Jack"});
 
       jest.runOnlyPendingTimers();
@@ -133,8 +133,8 @@ describe('react.backbone', function() {
     it("should render mixins as-is", function() {
       var user = new Backbone.Model({name: "Clay"});
       var wall = new Backbone.Model({post_count: 5});
-      var profileView = ProfileView({user: user, wall: wall});
-      TestUtils.renderIntoDocument(profileView);
+      var profileViewRef = ProfileView({user: user, wall: wall});
+      var profileView = TestUtils.renderIntoDocument(profileViewRef);
 
       var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
       expect(header.getDOMNode().textContent).toEqual('Clay');
@@ -147,8 +147,8 @@ describe('react.backbone', function() {
     it("should re-render if either mixin model is changed", function() {
       var user = new Backbone.Model({name: "Clay"});
       var wall = new Backbone.Model({post_count: 5});
-      var profileView = ProfileView({user: user, wall: wall});
-      TestUtils.renderIntoDocument(profileView);
+      var profileViewRef = ProfileView({user: user, wall: wall});
+      var profileView = TestUtils.renderIntoDocument(profileViewRef);
 
       user.set("name", "David");
       var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
@@ -177,8 +177,8 @@ describe('react.backbone', function() {
         });
         it("should use that prop", function() {
           var user = new Backbone.Model({name: "Clay"});
-          var userView = UserView({user_model: user});
-          TestUtils.renderIntoDocument(userView);
+          var userViewRef = UserView({user_model: user});
+          var userView = TestUtils.renderIntoDocument(userViewRef);
 
           var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
           expect(header.getDOMNode().textContent).toEqual('Clay');
@@ -203,8 +203,8 @@ describe('react.backbone', function() {
         });
         it("should use that event", function() {
           var user = new Backbone.Model({name: "Clay", age: 25});
-          var userView = UserView({user_model: user});
-          TestUtils.renderIntoDocument(userView);
+          var userViewRef = UserView({user_model: user});
+          var userView = TestUtils.renderIntoDocument(userViewRef);
           var header;
 
           user.set("age", 26);
@@ -235,8 +235,8 @@ describe('react.backbone', function() {
         });
         it("should use that return value", function() {
           var user = new Backbone.Model({name: "Clay"});
-          var userView = UserView({user_model: user});
-          TestUtils.renderIntoDocument(userView);
+          var userViewRef = UserView({user_model: user});
+          var userView = TestUtils.renderIntoDocument(userViewRef);
 
           var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
           expect(header.getDOMNode().textContent).toEqual('Clay');
