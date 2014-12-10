@@ -1,7 +1,7 @@
 react.backbone
 ==============
 
-[![Build Status](https://travis-ci.org/usepropeller/react.backbone.svg)](https://travis-ci.org/usepropeller/react.backbone)
+[![Build Status](https://travis-ci.org/clayallsopp/react.backbone.svg)](https://travis-ci.org/clayallsopp/react.backbone)
 
 Plugin for React to make Backbone integration easier. Initialize your component
 with a Backbone.Model or Backbone.Collection; when the model or collection
