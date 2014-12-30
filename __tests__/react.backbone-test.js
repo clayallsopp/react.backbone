@@ -246,6 +246,72 @@ describe('react.backbone', function() {
         });
       });
 
+      describe("with non-standard Backbone class", function () {
+        var tmp;
+        var UserView = React.createBackboneClass({
+          render: function () {
+            return <div>Stub</div>;
+          }
+        });
+
+        beforeEach(function () {
+          tmp = React.BackboneMixin.ConsiderAsCollection;
+        });
+        afterEach(function () {
+          React.BackboneMixin.ConsiderAsCollection = tmp;
+        });
+
+        it("should pass collection to config function for test", function () {
+          var UserCollection = Backbone.Collection.extend({});
+          var users = new UserCollection([{ id: 1 }]);
+          React.BackboneMixin.ConsiderAsCollection = function (object) {
+            expect(object).toEqual(users);
+            return true;
+          };
+          var userViewRef = UserView({ collection: users });
+          TestUtils.renderIntoDocument(userViewRef);
+        });
+        it("should pass model to config function for test", function () {
+          var UserModel = Backbone.Model.extend({});
+          var user = new UserModel({ id: 1 });
+          React.BackboneMixin.ConsiderAsCollection = function (object) {
+            expect(object).toEqual(user);
+            return false;
+          };
+          var userViewRef = UserView({ model: user });
+          TestUtils.renderIntoDocument(userViewRef);
+        });
+
+        function expectBehavior(expectedEvents) {
+          function CustomBackboneStub() {}
+          CustomBackboneStub.prototype.on = function (events) {
+            expect(events).toEqual(expectedEvents);
+          };
+          return CustomBackboneStub;
+        }
+
+        it("should use model behavior if ConsiderAsCollection returns false", function () {
+          var CustomModel = expectBehavior('change');
+          var usersModel = new CustomModel();
+          React.BackboneMixin.ConsiderAsCollection = function (object) {
+            return false;
+          };
+          var userViewRef = UserView({ model: usersModel });
+          TestUtils.renderIntoDocument(userViewRef);
+        });
+
+        it("should allow custom collection class", function () {
+          var CustomCollection = expectBehavior('add remove reset sort');
+          var usersCollection = new CustomCollection();
+          React.BackboneMixin.ConsiderAsCollection = function (object) {
+            return true;
+          };
+          var userViewRef = UserView({ collection: usersCollection });
+          TestUtils.renderIntoDocument(userViewRef);
+        });
+
+      });
+
     });
   });
 
