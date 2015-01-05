@@ -30,7 +30,7 @@
             return;
         }
 
-        var behavior = modelOrCollection instanceof Backbone.Collection ? collectionBehavior : modelBehavior;
+        var behavior = React.BackboneMixin.ConsiderAsCollection(modelOrCollection) ? collectionBehavior : modelBehavior;
 
         var triggerUpdate = behavior.updateScheduler(function() {
             if (component.isMounted()) {
@@ -100,6 +100,10 @@
             unsubscribe(this, modelOrCollection(this.props));
         }
       };
+    };
+
+    React.BackboneMixin.ConsiderAsCollection = function (modelOrCollection) {
+        return modelOrCollection instanceof Backbone.Collection;
     };
 
     React.BackboneViewMixin = {

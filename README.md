@@ -119,6 +119,18 @@ React.BackboneMixin({
 });
 ```
 
+If your Collection or Model class does not inherit directly from Backbone.Model 
+or Backbone.Collection, you may customize the behavior on a library level by
+overriding the React.BackboneMixin.ConsiderAsCollection function.
+
+Return `true` if the object passed should behave as a collection.
+
+```javascript
+React.BackboneMixin.ConsiderAsCollection = function (modelOrCollection) {
+  return modelOrCollection instanceof Backbone.Collection || modelOrCollection instanceof MyCustomCollection;
+}
+```
+
 ### Installation
 
 Either download `react.backbone.js` or install the `react.backbone` package on
