@@ -8,7 +8,7 @@ with a Backbone.Model or Backbone.Collection; when the model or collection
 changes, `#render` will be called.
 
 ```javascript
-var UserView = React.createBackboneClass({
+var UserViewComponent = React.createBackboneClass({
     changeOptions: "change:name", // DEFAULT is "change",
     render: function() {
         return (
@@ -20,37 +20,42 @@ var UserView = React.createBackboneClass({
 });
 
 var user = new Backbone.Model();
+var UserView = React.createFactory(UserViewComponent);
 var userView = UserView({model: user});
 
 // Mount your component directly
-React.renderComponent(userView, document.getElementById('element'));
+React.render(userView, document.getElementById('element'));
 
 // Render as a subview
-var ProfileView = React.createClass({
+var ProfileViewComponent = React.createClass({
   render: function() {
       return (
         <div>
-          <UserView model={this.props.user} />
+          <UserViewComponent model={this.props.user} />
         </div>
       );
   }
 });
+
+var ProfileView = React.createFactory(ProfileViewComponent);
+var profileView = ProfileView({user: user});
+React.render(profileView, document.getElementById('element'));
 ```
 
 React.Backbone also plays nicely with `Backbone.Collection`. Anytime the `add`,
 `remove`, `reset` or `sort` events are triggered the component will re-render.
 
 ```javascript
-var UserView = React.createBackboneClass({
+var UserViewComponent = React.createBackboneClass({
   render: function() {
     return <li>{ this.getModel().get('name') }</li>;
   }
 });
 
-var UsersListView = React.createBackboneClass({
+var UsersListViewComponent = React.createBackboneClass({
     render: function() {
         var usersList = this.getCollection().map(function(user) {
-            return <UserView model={user} />;
+            return <UserViewComponent model={user} />;
         });
 
         return (
@@ -64,16 +69,17 @@ var UsersListView = React.createBackboneClass({
 });
 
 var usersList = new Backbone.Collection();
+var UsersListView = React.createFactory(UsersListViewComponent);
 var usersListView = UsersListView({collection: usersList});
 
-React.renderComponent(usersListView, document.getElementById('users'));
+React.render(usersListView, document.getElementById('users'));
 ```
 
 If you need to use multiple models, you can do so by including the mixin
 multiple times:
 
 ```javascript
-var CommentView = React.createBackboneClass({
+var CommentViewComponent = React.createBackboneClass({
     mixins: [
 
         // when the view is instantiated,
@@ -93,9 +99,10 @@ var CommentView = React.createBackboneClass({
 
 var user = new Backbone.Model();
 var comment = new Backbone.Model();
+var CommentView = React.createFactory(CommentViewComponent)
 var commentView = CommentView({user: user, comment: comment});
 
-React.renderComponent(usersListView, document.getElementById('users'));
+React.render(usersListView, document.getElementById('users'));
 ```
 
 You can also pass an object with options to the included mixin:
@@ -145,7 +152,7 @@ included Backbone and React) or through RequireJS/AMD:
 
 ```javascript
 define(['backbone', 'react', 'react.backbone'], function(Backbone, React) {
-    var UserView = React.createBackboneClass({
+    var UserViewComponent = React.createBackboneClass({
         // ...
     });
 });
