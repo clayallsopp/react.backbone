@@ -99,7 +99,7 @@ var CommentViewComponent = React.createBackboneClass({
 
 var user = new Backbone.Model();
 var comment = new Backbone.Model();
-var CommentView = React.createFactory(CommentViewComponent)
+var CommentView = React.createFactory(CommentViewComponent);
 var commentView = CommentView({user: user, comment: comment});
 
 React.render(usersListView, document.getElementById('users'));
