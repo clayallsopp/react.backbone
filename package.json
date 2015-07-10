@@ -27,7 +27,8 @@
   },
   "peerDependencies": {
     "react": ">=0.10.x <1.x.x",
-    "backbone": "1.x.x"
+    "backbone": "1.x.x",
+    "underscore": ">=1.2.x"
   },
   "jest": {
     "unmockedModulePathPatterns": ["node_modules/react"],
