@@ -2,13 +2,13 @@
 jest.autoMockOff();
 
 describe('react.backbone', function() {
-  var ReactWithAddons = require('react/addons');
-  var TestUtils = ReactWithAddons.addons.TestUtils;
+  var TestUtils = require('react-addons-test-utils');
   var Backbone = require('backbone');
   var React = require('../react.backbone.js');
+  var ReactDOM = require('react-dom');
 
   describe("with :model key", function() {
-    var UserView = React.createBackboneClass({
+    var UserClass = React.createBackboneClass({
         render: function() {
             return (
               <div>
@@ -18,13 +18,16 @@ describe('react.backbone', function() {
         }
     });
 
+    var UserView = React.createFactory(UserClass);
+
     it('renders model as-is', function() {
       var user = new Backbone.Model({name: "Clay"});
       var userViewRef = UserView({model: user});
       var userView = TestUtils.renderIntoDocument(userViewRef);
 
       var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-      expect(header.getDOMNode().textContent).toEqual('Clay');
+      var node = ReactDOM.findDOMNode(header);
+      expect(node.textContent).toEqual('Clay');
     });
 
     it('renders model after changes to property', function() {
@@ -34,11 +37,12 @@ describe('react.backbone', function() {
       user.set("name", "David");
 
       var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-      expect(header.getDOMNode().textContent).toEqual('David');
+      var node = ReactDOM.findDOMNode(header);
+      expect(node.textContent).toEqual('David');
     });
 
     describe("with changeOptions", function() {
-      var UserView = React.createBackboneClass({
+      var UserClass = React.createBackboneClass({
         changeOptions: "change:name",
         render: function() {
             return (
@@ -49,6 +53,8 @@ describe('react.backbone', function() {
         }
       });
 
+      var UserView = React.createFactory(UserClass);
+
       it('doesnt render if other property is changed', function() {
         var user = new Backbone.Model({name: "Clay", age: "80"});
         var userViewRef = UserView({model: user});
@@ -56,7 +62,8 @@ describe('react.backbone', function() {
         user.set("age", "60");
 
         var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-        expect(header.getDOMNode().textContent).toEqual('Clay 80');
+        var node = ReactDOM.findDOMNode(header);
+        expect(node.textContent).toEqual('Clay 80');
       });
 
       it('does render if valid property is changed', function() {
@@ -66,17 +73,18 @@ describe('react.backbone', function() {
         user.set("name", "David");
 
         var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-        expect(header.getDOMNode().textContent).toEqual('David 80');
+        var node = ReactDOM.findDOMNode(header);
+        expect(node.textContent).toEqual('David 80');
       });
 
     });
   });
 
   describe("with :collection key", function() {
-    var UsersListView = React.createBackboneClass({
+    var UsersListClass = React.createBackboneClass({
       render: function() {
         var usersList = this.getCollection().map(function(user) {
-            return <li>{user.get("name")}</li>;
+            return <li key={user.cid}>{user.get("name")}</li>;
         });
 
         return (
@@ -87,6 +95,8 @@ describe('react.backbone', function() {
       }
     });
 
+    var UsersListView = React.createFactory(UsersListClass)
+
     it('renders collection as-is', function() {
       var usersList = new Backbone.Collection([{name: "Clay"}, {name: "David"}]);
       var usersListViewRef = UsersListView({collection: usersList});
@@ -95,8 +105,8 @@ describe('react.backbone', function() {
       jest.runOnlyPendingTimers();
 
       var list = TestUtils.findRenderedDOMComponentWithTag(usersListView, 'ul');
-      expect(list.getDOMNode().childNodes.length).toEqual(2);
-      expect(list.getDOMNode().childNodes[0].textContent).toEqual("Clay");
+      expect(ReactDOM.findDOMNode(list).childNodes.length).toEqual(2);
+      expect(ReactDOM.findDOMNode(list).childNodes[0].textContent).toEqual("Clay");
     });
 
     it('renders collection on adding', function() {
@@ -109,13 +119,13 @@ describe('react.backbone', function() {
       jest.runOnlyPendingTimers();
 
       var list = TestUtils.findRenderedDOMComponentWithTag(usersListView, 'ul');
-      expect(list.getDOMNode().childNodes.length).toEqual(3);
-      expect(list.getDOMNode().childNodes[2].textContent).toEqual("Jack");
+      expect(ReactDOM.findDOMNode(list).childNodes.length).toEqual(3);
+      expect(ReactDOM.findDOMNode(list).childNodes[2].textContent).toEqual("Jack");
     });
   });
 
   describe("with mixins", function() {
-    var ProfileView = React.createBackboneClass({
+    var ProfileClass = React.createBackboneClass({
       mixins: [
         React.BackboneMixin("user"),
         React.BackboneMixin("wall")
@@ -130,6 +140,8 @@ describe('react.backbone', function() {
       }
     });
 
+    var ProfileView = React.createFactory(ProfileClass)
+
     it("should render mixins as-is", function() {
       var user = new Backbone.Model({name: "Clay"});
       var wall = new Backbone.Model({post_count: 5});
@@ -137,10 +149,11 @@ describe('react.backbone', function() {
       var profileView = TestUtils.renderIntoDocument(profileViewRef);
 
       var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
-      expect(header.getDOMNode().textContent).toEqual('Clay');
+      var node = ReactDOM.findDOMNode(header);
+      expect(node.textContent).toEqual('Clay');
 
       var header2 = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h2');
-      expect(header2.getDOMNode().textContent).toEqual('5 Posts');
+      expect(ReactDOM.findDOMNode(header2).textContent).toEqual('5 Posts');
 
     });
 
@@ -152,16 +165,17 @@ describe('react.backbone', function() {
 
       user.set("name", "David");
       var header = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h1');
-      expect(header.getDOMNode().textContent).toEqual('David');
+      var node = ReactDOM.findDOMNode(header);
+      expect(node.textContent).toEqual('David');
 
       wall.set("post_count", 6);
       var header2 = TestUtils.findRenderedDOMComponentWithTag(profileView, 'h2');
-      expect(header2.getDOMNode().textContent).toEqual('6 Posts');
+      expect(ReactDOM.findDOMNode(header2).textContent).toEqual('6 Posts');
     });
 
     describe("with options", function() {
       describe("with propName", function() {
-        var UserView = React.createBackboneClass({
+        var UserClass = React.createBackboneClass({
           mixins: [
             React.BackboneMixin({
               propName: "user_model"
@@ -175,18 +189,22 @@ describe('react.backbone', function() {
             );
           }
         });
+
+        var UserView = React.createFactory(UserClass);
+
         it("should use that prop", function() {
           var user = new Backbone.Model({name: "Clay"});
           var userViewRef = UserView({user_model: user});
           var userView = TestUtils.renderIntoDocument(userViewRef);
 
           var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-          expect(header.getDOMNode().textContent).toEqual('Clay');
+          var node = ReactDOM.findDOMNode(header);
+          expect(node.textContent).toEqual('Clay');
         });
       });
 
       describe("with renderOn", function() {
-        var UserView = React.createBackboneClass({
+        var UserClass = React.createBackboneClass({
           mixins: [
             React.BackboneMixin({
               propName: "user_model",
@@ -201,6 +219,9 @@ describe('react.backbone', function() {
             );
           }
         });
+
+        var UserView = React.createFactory(UserClass);
+
         it("should use that event", function() {
           var user = new Backbone.Model({name: "Clay", age: 25});
           var userViewRef = UserView({user_model: user});
@@ -209,15 +230,17 @@ describe('react.backbone', function() {
 
           user.set("age", 26);
           header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-          expect(header.getDOMNode().textContent).toEqual('Clay 25');
+          var node = ReactDOM.findDOMNode(header);
+          expect(node.textContent).toEqual('Clay 25');
 
           user.set("name", "David");
-          expect(header.getDOMNode().textContent).toEqual('David 26');
+          var node = ReactDOM.findDOMNode(header);
+          expect(node.textContent).toEqual('David 26');
         });
       });
 
       describe("with modelOrCollection", function() {
-        var UserView = React.createBackboneClass({
+        var UserClass = React.createBackboneClass({
           mixins: [
             React.BackboneMixin({
               modelOrCollection: function(props) {
@@ -233,26 +256,33 @@ describe('react.backbone', function() {
             );
           }
         });
+
+        var UserView = React.createFactory(UserClass);
+
         it("should use that return value", function() {
           var user = new Backbone.Model({name: "Clay"});
           var userViewRef = UserView({user_model: user});
           var userView = TestUtils.renderIntoDocument(userViewRef);
 
           var header = TestUtils.findRenderedDOMComponentWithTag(userView, 'h1');
-          expect(header.getDOMNode().textContent).toEqual('Clay');
+          var node = ReactDOM.findDOMNode(header);
+          expect(node.textContent).toEqual('Clay');
 
           user.set("name", "David");
-          expect(header.getDOMNode().textContent).toEqual('David');
+          var node = ReactDOM.findDOMNode(header);
+          expect(node.textContent).toEqual('David');
         });
       });
 
       describe("with non-standard Backbone class", function () {
         var tmp;
-        var UserView = React.createBackboneClass({
+        var UserClass = React.createBackboneClass({
           render: function () {
             return <div>Stub</div>;
           }
         });
+
+        var UserView = React.createFactory(UserClass);
 
         beforeEach(function () {
           tmp = React.BackboneMixin.ConsiderAsCollection;

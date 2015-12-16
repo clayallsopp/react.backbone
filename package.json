@@ -20,18 +20,24 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "jest-cli": "~0.1.17",
-    "react-tools": "0.11.x",
-    "react": ">=0.10.x <1.x.x",
-    "backbone": "1.x.x"
+    "backbone": "1.x.x",
+    "jest-cli": "~0.8.2",
+    "react": ">=0.14.x <1.x.x",
+    "react-addons-test-utils": "^0.14.3",
+    "react-dom": ">=0.14.x <1.x.x",
+    "react-tools": "0.13.x"
   },
   "peerDependencies": {
-    "react": ">=0.10.x <1.x.x",
+    "react": ">=0.14.x <1.x.x",
+    "react-dom": ">=0.14.x <1.x.x",
     "backbone": "1.x.x",
     "underscore": ">=1.2.x"
   },
   "jest": {
-    "unmockedModulePathPatterns": ["node_modules/react"],
+    "unmockedModulePathPatterns": [
+      "node_modules/react",
+      "node_modules/react-dom"
+    ],
     "scriptPreprocessor": "preprocessor.js"
   }
 }

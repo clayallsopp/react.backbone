@@ -1,15 +1,15 @@
 (function(root, factory) {
     if (typeof exports === 'object') {
         // CommonJS
-        module.exports = factory(require('backbone'), require('react'), require('underscore'));
+        module.exports = factory(require('backbone'), require('react'), require('react-dom'), require('underscore'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['backbone', 'react', 'underscore'], factory);
+        define(['backbone', 'react', 'react-dom', 'underscore'], factory);
     } else {
         // Browser globals
-        root.amdWeb = factory(root.Backbone, root.React, root._);
+        root.amdWeb = factory(root.Backbone, root.React, root.ReactDOM, root._);
     }
-}(this, function(Backbone, React, _) {
+}(this, function(Backbone, React, ReactDOM,  _) {
 
     'use strict';
 
@@ -124,7 +124,7 @@
         },
 
         el: function() {
-            return this.isMounted() && this.getDOMNode();
+            return this.isMounted() && ReactDOM.findDOMNode(this);
         }
     };
 
