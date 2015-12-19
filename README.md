@@ -157,3 +157,5 @@ define(['backbone', 'react', 'react.backbone'], function(Backbone, React) {
     });
 });
 ```
+
+Version 0.7.0 supports React >0.14 and Backbone >1.0; for React <0.14, check out versions 0.6.0 and prior
