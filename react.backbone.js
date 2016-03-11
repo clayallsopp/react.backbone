@@ -1,15 +1,15 @@
 (function(root, factory) {
     if (typeof exports === 'object') {
         // CommonJS
-        module.exports = factory(require('backbone'), require('react'), require('react-dom'), require('underscore'));
+        module.exports = factory(require('backbone'), require('react'), require('underscore'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['backbone', 'react', 'react-dom', 'underscore'], factory);
+        define(['backbone', 'react', 'underscore'], factory);
     } else {
         // Browser globals
-        root.amdWeb = factory(root.Backbone, root.React, root.ReactDOM, root._);
+        root.amdWeb = factory(root.Backbone, root.React, root._);
     }
-}(this, function(Backbone, React, ReactDOM,  _) {
+}(this, function(Backbone, React,  _) {
 
     'use strict';
 
@@ -122,10 +122,6 @@
         collection: function() {
             return this.getCollection();
         },
-
-        el: function() {
-            return this.isMounted() && ReactDOM.findDOMNode(this);
-        }
     };
 
     React.createBackboneClass = function(spec) {
