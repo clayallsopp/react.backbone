@@ -1,4 +1,12 @@
 language: node_js
 node_js:
-  - "4"
-  - "5"
+- '4'
+- '5'
+deploy:
+  provider: npm
+  email: clay.allsopp@gmail.com
+  api_key:
+    secure: uQa92bxzuW+8HSZ56rU/npODuD2m1vAeJHaPSYhUHtNlv+76BSt1vDY34LRh8ry6vRRxMoVNb0kmQ1nPWuo5saxPWGoZQ5N+3DfwWetIH7K+y9szG+NpLIsL5sz63tB8/hGYuyUr6QNYYW6P5ElswLoAdcWMUrIpJJAQ8GEKu5g=
+  on:
+    tags: true
+    repo: clayallsopp/react.backbone
