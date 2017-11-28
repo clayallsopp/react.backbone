@@ -33,7 +33,7 @@
         var behavior = React.BackboneMixin.ConsiderAsCollection(modelOrCollection) ? collectionBehavior : modelBehavior;
 
         var triggerUpdate = behavior.updateScheduler(function() {
-            if (component.isMounted()) {
+            if (component._isMounted) {
                 (component.onModelChange || component.forceUpdate).call(component);
             }
         });
@@ -68,6 +68,8 @@
 
       return {
         componentDidMount: function() {
+            this._isMounted = true;
+
             // Whenever there may be a change in the Backbone data, trigger a reconcile.
             subscribe(this, modelOrCollection(this.props), customChangeOptions);
         },
@@ -96,6 +98,8 @@
         },
 
         componentWillUnmount: function() {
+            this._isMounted = false;
+
             // Ensure that we clean up any dangling references when the component is destroyed.
             unsubscribe(this, modelOrCollection(this.props));
         }
