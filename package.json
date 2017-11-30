@@ -1,6 +1,6 @@
 {
   "name": "react.backbone",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "author": "Clay Allsopp <clay.allsopp@gmail.com>",
   "scripts": {
     "test": "jest"
